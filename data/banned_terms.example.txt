@@ -1,0 +1,2 @@
+# One restricted end-client / project name per line. Never appear in outgoing RFQs.
+ACME Power

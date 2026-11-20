@@ -1,0 +1,11 @@
+{
+  "name": "Your Company",
+  "address": "Street, City, COUNTRY",
+  "phone": "+00 000 0000000",
+  "email": "sales@example.com",
+  "ntn": "",
+  "strn": "",
+  "ship_to": "Your Company, Street, City, COUNTRY",
+  "accent": "#EA7424",
+  "logo_text": "YC"
+}

@@ -1,0 +1,15 @@
+.env
+.agents/
+.venv/
+outputs/
+__pycache__/
+*.pyc
+.pytest_cache/
+.streamlit/secrets.toml
+.DS_Store
+
+# private business data: commit only the *.example copies
+data/suppliers.csv
+data/banned_terms.txt
+data/company.json
+evaluation/cases/*.json

@@ -1,0 +1,10 @@
+langgraph
+langchain-groq
+langchain-core
+pydantic>=2
+streamlit
+pandas
+pypdf
+python-dotenv
+pytest
+reportlab
