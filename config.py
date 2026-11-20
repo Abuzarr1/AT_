@@ -9,22 +9,36 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 OUTPUT_DIR = BASE_DIR / "outputs"
+OUTPUT_DIR.mkdir(exist_ok=True)  # auto-create on Streamlit Cloud
 
 load_dotenv(BASE_DIR / ".env")
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
-SENDER_NAME = os.getenv("SENDER_NAME", "Abuzar Rashid")
-SENDER_COMPANY = os.getenv("SENDER_COMPANY", "Abdullah Traders")
-WEBMAIL_URL = os.getenv("WEBMAIL_URL", "https://rc.ds.network/")
+
+def _secret(key: str, default: str = "") -> str:
+    """st.secrets (Streamlit Cloud) → os.getenv (local .env) → default."""
+    try:
+        import streamlit as st  # noqa: PLC0415
+        val = st.secrets.get(key)
+        if val:
+            return str(val)
+    except Exception:  # noqa: BLE001
+        pass
+    return os.getenv(key, default)
+
+
+GROQ_API_KEY = _secret("GROQ_API_KEY", "")
+GROQ_MODEL = _secret("GROQ_MODEL", "openai/gpt-oss-120b")
+SENDER_NAME = _secret("SENDER_NAME", "Abuzar Rashid")
+SENDER_COMPANY = _secret("SENDER_COMPANY", "Abdullah Traders")
+WEBMAIL_URL = _secret("WEBMAIL_URL", "https://rc.ds.network/")
 
 # IMAP inbox monitoring (supplier reply notifications)
-IMAP_HOST     = os.getenv("IMAP_HOST", "")
-IMAP_PORT     = int(os.getenv("IMAP_PORT", "993"))
-IMAP_USER     = os.getenv("IMAP_USER", "")
-IMAP_PASSWORD = os.getenv("IMAP_PASSWORD", "")          # never printed / logged
-IMAP_USE_SSL  = os.getenv("IMAP_USE_SSL", "true").lower() != "false"
-IMAP_MAILBOX  = os.getenv("IMAP_MAILBOX", "INBOX")
+IMAP_HOST     = _secret("IMAP_HOST", "")
+IMAP_PORT     = int(_secret("IMAP_PORT", "993"))
+IMAP_USER     = _secret("IMAP_USER", "")
+IMAP_PASSWORD = _secret("IMAP_PASSWORD", "")          # never printed / logged
+IMAP_USE_SSL  = _secret("IMAP_USE_SSL", "true").lower() != "false"
+IMAP_MAILBOX  = _secret("IMAP_MAILBOX", "INBOX")
 
 MAX_EXTRACT_ATTEMPTS = 2        # first try + one guided retry (protects the Groq token cap)
 MAX_RATE_LIMIT_WAIT_S = 90      # waits longer than this mean a daily cap: stop, don't loop

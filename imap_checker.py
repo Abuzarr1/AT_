@@ -23,16 +23,29 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
+def _get_secret(key: str, default: str = "") -> str:
+    """Read from st.secrets (Streamlit Cloud) first, then os.getenv (local .env)."""
+    try:
+        import streamlit as st  # noqa: PLC0415
+        val = st.secrets.get(key)
+        if val:
+            return str(val)
+    except Exception:  # noqa: BLE001
+        pass
+    return os.getenv(key, default)
+
+
 # ------------------------------------------------------------------ config ---
-IMAP_HOST = os.getenv("IMAP_HOST", "")
-IMAP_PORT = int(os.getenv("IMAP_PORT", "993"))
-IMAP_USER = os.getenv("IMAP_USER", "")
-IMAP_PASSWORD = os.getenv("IMAP_PASSWORD", "")
-IMAP_USE_SSL = os.getenv("IMAP_USE_SSL", "true").lower() != "false"
-IMAP_MAILBOX = os.getenv("IMAP_MAILBOX", "INBOX")
+IMAP_HOST = _get_secret("IMAP_HOST", "")
+IMAP_PORT = int(_get_secret("IMAP_PORT", "993"))
+IMAP_USER = _get_secret("IMAP_USER", "")
+IMAP_PASSWORD = _get_secret("IMAP_PASSWORD", "")
+IMAP_USE_SSL = _get_secret("IMAP_USE_SSL", "true").lower() != "false"
+IMAP_MAILBOX = _get_secret("IMAP_MAILBOX", "INBOX")
 
 # How many recent messages to scan on each poll (keeps it fast)
-IMAP_SCAN_LAST_N = int(os.getenv("IMAP_SCAN_LAST_N", "50"))
+IMAP_SCAN_LAST_N = int(_get_secret("IMAP_SCAN_LAST_N", "50"))
 
 
 # ----------------------------------------------------------------- helpers ---
